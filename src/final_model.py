@@ -16,6 +16,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+import pandas as pd
 
 # --- Machine Learning & Experiment Tracking ---
 import mlflow
@@ -39,7 +40,9 @@ def train_model(MODEL_PATH: str):
     os.makedirs(model_dir, exist_ok=True)
 
     # --- Load data from Postgres ---
-    df = load_data("SELECT * FROM initial_labeling_data ORDER BY id" )
+    # df = load_data("SELECT * FROM initial_labeling_data ORDER BY id" )
+
+    df = pd.read_csv("../data/initial_labeling_data.csv")
 
     # --- Split features and target ---
     X = df.iloc[:, 2:-1]  # input features
@@ -96,4 +99,4 @@ def train_model(MODEL_PATH: str):
 
 # --- Execute the script ---
 if __name__ == "__main__":
-    train_model()
+    train_model("../models/pipeline_rf.joblib")

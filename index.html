@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Stock Exchange Equity Analytics </title>
+        <link rel="stylesheet" href="style.css">
+        <script src="app.ts"></script>
+    </head>
+
+    <body> 
+        <header class="header"> 
+            <h2> Fast Investment Assessment Engine </h2>
+        </header>
+
+        <section class="container">
+            <div class="col"> 
+            
+                <input id="net_income" type="number" placeholder="Get net_income">
+         
+                <input id="net_cash_flow" type="number" placeholder="Get net_cash_flow">
+                <input id="roe" type = "number" placeholder="Get return on equity">
+                <input id="roa" type="number" placeholder="Get return on assets">
+                <input id="ebitda" type="number" placeholder="Get ebitda">
+                <input id="sector" type="text" list="sector-options" placeholder="Get sector-name">
+                    <datalist id="sector-options">
+                        <option value="agriculture and food industry"></option>
+                        <option value="chemicals and health products"></option>
+                        <option value="commercial services"></option>
+                        <option value="communication technologies and media"></option>
+                        <option value="consumer goods and e-commerce"></option>
+                        <option value="energy technology"></option>
+                        <option value="financial and insurance"></option>
+                        <option value="health and life sciences"></option>
+                        <option value="hospitality industry"></option>
+                        <option value="manufacturing industry"></option>
+                        <option value="real estate and construction"></option>
+                        <option value="technology and engineering"></option>
+                        <option value="transport and motorization"></option>
+                    </datalist>
+                <input id="cumulation" type="number" list="cumulation-options" placeholder="Choose cumulation (0-no cumulation, 1-cumulation)">
+                    <datalist id="cumulation-options">
+                        <option value="1"> </option>
+                        <option value="0"> </option>
+                    </datalist>
+
+                <button onclick="predict()"> Generate the prediction </button>
+            </div>
+
+            <div class="col"> 
+                <div class="progress-row">
+                    <h3> high </h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="fill-high"> 0% </div>
+                    </div>
+                </div>
+
+                <div class="progress-row">
+                    <h3> middle </h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="fill-middle"> 0% </div>
+                    </div>
+                </div>
+                <div class="progress-row">
+                    <h3> low </h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="low-middle"> 0% </div>
+                    </div>
+                </div>
+            </div>
+
+            <pre id="output_data"></pre>
+        </section>
+   
+        <footer class="footer-class">
+        </footer>
+    </body>
+</html>

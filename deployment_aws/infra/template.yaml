@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: LambdaS3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource: arn:aws:s3:::pqa-bucket/*
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      PackageType: Image
+      Role: !GetAtt LambdaRole.Arn
+      Code:
+        ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/pqa-repository:latest"
+      Timeout: 30
+      MemorySize: 2048
+      Architectures:
+        - x86_64
+
+  GatewayAPI:
+    Type: AWS::ApiGatewayV2::Api
+    Properties: 
+      Name: pqa-gateway-api
+      ProtocolType: HTTP
+  
+  GatewayAPIIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties: 
+      ApiId: !Ref GatewayAPI
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt LambdaFunction.Arn
+      PayloadFormatVersion: "2.0"
+     
+  GatewayAPIRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties: 
+      ApiId: !Ref GatewayAPI
+      RouteKey: "POST /prediction"
+      Target: !Sub "integrations/${GatewayAPIIntegration}"
+
+  GatewayStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref GatewayAPI
+      AutoDeploy: true
+      StageName: development 
+  
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties: 
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${GatewayAPI}/*/POST/prediction"
