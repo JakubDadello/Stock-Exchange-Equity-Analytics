@@ -16,7 +16,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+<<<<<<< HEAD
 import pandas as pd
+=======
+>>>>>>> 6e10e057f5633264692b1aded85495f1fe9fdc03
 
 # --- Machine Learning & Experiment Tracking ---
 import mlflow
@@ -40,6 +43,7 @@ def train_model(MODEL_PATH: str):
     os.makedirs(model_dir, exist_ok=True)
 
     # --- Load data from Postgres ---
+<<<<<<< HEAD
     # df = load_data("SELECT * FROM initial_labeling_data ORDER BY id" )
 
     df = pd.read_csv("../data/initial_labeling_data.csv")
@@ -69,6 +73,35 @@ def train_model(MODEL_PATH: str):
         ("rf", RandomForestClassifier(**best_params))
     ])
 
+=======
+    df = load_data("SELECT * FROM initial_labeling_data ORDER BY id" )
+
+    # --- Split features and target ---
+    X = df.iloc[:, 2:-1]  # input features
+    Y = df.iloc[:, -1:]   # target labels
+
+    # --- split data ---
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.20, random_state=42)
+
+    # --- flatten y to avoid DataConversionWarning ---
+    Y_train = Y_train.values.ravel()
+    Y_test = Y_test.values.ravel()
+
+    # --- best parameters configuration ---
+    best_params = {
+        "n_estimators": 200,
+        "criterion": "entropy",
+        "max_depth": None, 
+        "random_state": 42
+        }
+
+    # --- define pipeline with Random Forest ---
+    pipeline = Pipeline([
+        ("preprocessing", preprocessor()),
+        ("rf", RandomForestClassifier(**best_params))
+    ])
+
+>>>>>>> 6e10e057f5633264692b1aded85495f1fe9fdc03
     # --- train model ---
     pipeline.fit(X_train, Y_train)
 
@@ -99,4 +132,8 @@ def train_model(MODEL_PATH: str):
 
 # --- Execute the script ---
 if __name__ == "__main__":
+<<<<<<< HEAD
     train_model("../models/pipeline_rf.joblib")
+=======
+    train_model()
+>>>>>>> 6e10e057f5633264692b1aded85495f1fe9fdc03

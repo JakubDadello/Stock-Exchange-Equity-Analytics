@@ -1,0 +1,13 @@
+services: 
+  api_python_model:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: pqa_python_api:latest
+    container_name: pqa_python_container
+    ports: 
+      - "8000:8000"
+    restart: always
+    environment:
+      - APP_ENV=production
+      - PYTHONUNBUFFERED=1

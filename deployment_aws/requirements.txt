@@ -1,6 +1,16 @@
+<<<<<<< HEAD
 # --- Libraries for Lambda ---
 numpy==1.26.4
 scikit-learn==1.6.1
 pandas==2.2.3
 joblib==1.4.2
 boto3
+=======
+# --- Libraries for Lambda ---
+numpy==1.26.4
+scikit-learn==1.6.1
+pandas==2.2.3
+joblib==1.4.2
+boto3
+
+>>>>>>> 6e10e057f5633264692b1aded85495f1fe9fdc03
