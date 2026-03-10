@@ -15,7 +15,7 @@ This folder contains all the datasets used in the project.
   - `roa`: Return on assets
   - `ebitda`: EBITDA in thousands of PLN (kPLN)
   - `sector`: Industry sector
-  - `cumulation`: Reporting type (quarterly, semi-annual)
+  - `cumulation`: Reporting type (quarterly-0, semi-annual-1)
 
 ---
 
