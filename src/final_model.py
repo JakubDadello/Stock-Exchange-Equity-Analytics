@@ -69,31 +69,6 @@ def train_model(MODEL_PATH: str):
     # --- train model ---
     pipeline.fit(X_train, Y_train)
 
-    # --- predictions ---
-    Y_pred = pipeline.predict(X_test)
-
-    # --- evaluation ---
-    accuracy = accuracy_score(Y_test, Y_pred)
-
-    # --- Save the trained pipeline ---
-    joblib.dump(pipeline, MODEL_PATH)
-
-    # --- MLflow experiment ---
-    mlflow.set_experiment("")
-        
-    with mlflow.start_run():
-
-        # 1. Log hyperparameters found during tuning
-        mlflow.log_params(best_params)
-
-        # 2. Log the performance metric 
-        mlflow.log_metric("accuracy", accuracy)
-
-        # 3. Log the model artifact with a signature 
-        mlflow.sklearn.log_model(pipeline, "model")
-
-    return accuracy
-
 # --- Execute the script ---
 if __name__ == "__main__":
     train_model()
