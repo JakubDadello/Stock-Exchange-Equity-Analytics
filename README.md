@@ -2,15 +2,9 @@
 
 ## Project Description
 
-This project analyzes the financial data of 370 Polish listed companies (GPW), taking into account sector-specific characteristics, to support investment decision-making. 
-
-The goal is to build a robust classification model that accurately predicts each company's investment rating (low, medium, or high) based on key financial indicators.
-
 Developed a machine learning model to classify investment ratings of 370 publicly listed Polish companies based on financial indicators and sector-specific characteristics.
 
 Built a complete data analysis and modeling pipeline, including data preprocessing, feature engineering, and model training to predict investment categories (low, medium, high).
-
-Applied classification algorithms to identify patterns in financial data and support data-driven investment decision-making.
 
 Although the dataset comes from companies listed on the Warsaw Stock Exchange, the project demonstrates transferable data science and financial analysis skills. Financial indicators such as ROA, EBITDA, and leverage ratios are standardized worldwide, making the modeling approach applicable to global financial markets.
 
@@ -50,12 +44,6 @@ To run this project locally, you can use either Docker (recommended) or a standa
 
 ## Tech Stack
 
-<<<<<<< HEAD
-- Language: Python 3.11
-- Libraries: Scikit-learn, Pandas, NumPy, Matplotlib, TensorFlow (MLP)
-- Tools: Power BI, SQL (Data Extraction), Canva (Presentation)
-- Backend & Deployment: FastAPI, Pydantic, Docker, Uvicorn, Joblib
-=======
 - Language: Python 3.10
 - Libraries: Scikit-learn, Pandas, NumPy, Matplotlib, TensorFlow (MLP)
 - Tools: Power BI, PostgreSQL 
