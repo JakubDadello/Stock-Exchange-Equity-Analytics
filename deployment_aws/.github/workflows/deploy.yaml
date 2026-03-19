@@ -1,52 +1,52 @@
-name: Deploy Lambda Container-Image
+name: Deploy Lambda Container-Image #Defines the workflow name visible in the GitHub Actions UI.
 
 on:
     push:
-        branches: [ main ]  # Trigger deployment only on pushes to main
+        branches: [ main ]  #Triggers the workflow only when code is pushed to the main branch.
 
-env: 
+
+env: #Global environment variables used across all steps.
     AWS-REGION: eu-north-1
     ECR_URI: ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/pqa-repository
     LAMBDA_FUNCTION: pipeline-rf_provider 
 
-jobs:
+jobs: # Specifies the job and the virtual machine used to run the workflow.
     deployment:
         runs-on: ubuntu-latest
 
-        permissions:
+        permissions: #Grants permissions required for OIDC authentication and repository access.
             id-token: write  # Required for requesting the JWT (OIDC)
             contents: read  #Required for actions/checkout
 
         steps:
-            -   name: Checkout repository
+            -   name: Checkout repository #Checks out the repository so the workflow can access the code.
                 uses: actions/checkout@v6
             
-            -   name: Configuration AWS credentials
+            -   name: Configuration AWS credentials #Authenticates to AWS using OIDC and assumes the IAM role defined in secrets.
                 uses: aws-actions/configure-aws-credentials@v6
                 with:
                     aws-region: ${{env.AWS-REGION}}
                     role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
 
-            -   name: Login to Amazon ECR 
+            -   name: Login to Amazon ECR #Logs into Amazon ECR so Docker can push images to the repository.
                 id: login-ecr-public
                 uses: aws-actions/amazon-ecr-login@v2
                 with: 
                     registry-type: private
 
-            -   name: Set up Docker Buildx
+            -   name: Set up Docker Buildx #Enable Docker Buildx for advanced and multi-platform image builds.
                 uses: docker/setup-buildx-action@v3
 
-            -   name: Build and push image using buildx
+            -   name: Build and push image using buildx #Builds the Lambda container image, tags it with the commit SHA, and pushes it to ECR to avoid manifest mismatch errors
                 run: | 
                     docker buildx build \
-                    --platform linux/amd64 \
+                    --platform linux/amd64 #
                     --provenance=false \
                     --sbom=false \
-                    -t ${{ env.ECR_URI }}:latest \
                     -t ${{ env.ECR_URI }}:${{ github.sha }} \
                     --push .
 
-            -   name: Update Lambda Function 
+            -   name: Update Lambda Function #Updates the Lambda function to use the newly pushed container image.
                 run: | 
                     aws lambda update-function-code
                     --function-name ${{env.LAMBDA_FUNCTION}}
