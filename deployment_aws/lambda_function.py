@@ -3,16 +3,24 @@ import boto3
 import joblib
 import json 
 
+# Infrastructure Constants - Pointing to S3 assets managed via IaC 
 S3_BUCKET = "pqa-bucket"
 MODEL_KEY = "pipeline_rf.joblib"
 
+# Global AWS Client initialization to leverage connection pooling across Lambda invocations
 s3 = boto3.client("s3")
+
+# Global variable for Lazy Loading pattern 
 model = None
 
 def load_model():
-    
+    """
+    Downloads the serialized model from S3 and loads it into memory.
+    Implements local caching in /tmp to minimize S3 egress costs and latency.
+    """
     local_path = "/tmp/pipeline_rf.joblib"
 
+    # Check for local cache to avoid redundant network overhead
     if not os.path.exists(local_path):
         s3.download_file(S3_BUCKET, MODEL_KEY, local_path)
 
@@ -20,11 +28,17 @@ def load_model():
 
 
 def lambda_handler(event, context):
+    """
+    Main entry point for AWS Lambda. Handles JSON event parsing, 
+    model initialization, and high-performance inference.
+    """
     global model
 
+    # Lazy Loading Strategy: Avoids expensive re-initialization during warm starts
     if model is None:
         model = load_model()
 
+    # Dynamic payload extraction: Supports both API Gateway (proxy) and direct invocation
     if "body" in event:
         body = json.loads(event["body"])
     else:
@@ -32,12 +46,29 @@ def lambda_handler(event, context):
 
     data = body.get("data")
     
+    # Input Validation: Crucial for production-grade robustness
     if data is None:
-        return {"error": "Missing 'data' field in request"}
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"error": "Missing 'data' field in request"})
+        }
 
+    # Execute Prediction using the pre-loaded Scikit-Learn/Joblib pipeline
     prediction = model.predict(data)
+    label = prediction[0]
 
+    # Map classification label to business-logic response format
+    # Note: Using hardcoded probabilities for discrete classification results
+    if label == "high":
+        result = {"high": 100, "middle": 0, "low": 0}
+    elif label == "middle":
+        result = {"high": 0, "middle": 100, "low": 0}
+    else:
+        result = {"high": 0, "middle": 0, "low": 100}
+
+    # Standard production return format for AWS Lambda integrated with API Gateway
     return {
-        "input": data,
-        "prediction": prediction.tolist()
+        "statusCode": 200,
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps(result)
     }
