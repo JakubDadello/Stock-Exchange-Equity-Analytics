@@ -35,6 +35,50 @@ Resources:
       MemorySize: 2048
       Architectures:
         - x86_64
+  
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${LambdaFunction}"
+
+  LambdaErrorMetric:
+    Type: AWS::Logs::MetricFilter
+    Properties: 
+      FilterPattern: '"ERROR"'
+      LogGroupName: !Ref LambdaLogGroup
+      MetricTransformations:
+      -   MetricName: Lambda_func_errors
+          MetricNamespace: PQA_metrics
+          MetricValue: "1"
+  
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: "PQA-alerts"
+      Tags:
+        -   Key: project
+            Value: pqa 
+
+  AlertSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      Endpoint: kejdi16try@gmail.com
+      TopicArn: !Ref AlertTopic 
+
+  LambdaErrAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions: 
+      -   !Ref AlertTopic
+      AlarmName: LambdaErrAlarm
+      MetricName: Lambda_func_errors
+      Namespace: PQA_metrics
+      Statistic: Sum
+      Period: 30 
+      EvaluationPeriods: 1
+      Threshold: 3 
+      ComparisonOperator: GreaterThanOrEqualToThreshold 
 
   GatewayAPI:
     Type: AWS::ApiGatewayV2::Api
