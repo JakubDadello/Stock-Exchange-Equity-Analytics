@@ -6,7 +6,7 @@ on:
 
 
 env: #Global environment variables used across all steps.
-    AWS-REGION: eu-north-1
+    AWS_REGION: eu-north-1
     ECR_URI: 798836978601.dkr.ecr.eu-north-1.amazonaws.com/pqa-repository
     LAMBDA_FUNCTION: pipeline-rf_provider 
 
@@ -15,17 +15,17 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
         runs-on: ubuntu-latest
 
         permissions: #Grants permissions required for OIDC authentication and repository access.
-            id-token: write  # Required for requesting the JWT (OIDC)
+            id-token: write  #Required for requesting the JWT (OIDC)
             contents: read  #Required for actions/checkout
 
         steps:
             -   name: Checkout repository #Checks out the repository so the workflow can access the code.
-                uses: actions/checkout@v6
-            
+                uses: actions/checkout@v4
+                
             -   name: Configuration AWS credentials #Authenticates to AWS using OIDC and assumes the IAM role defined in secrets.
-                uses: aws-actions/configure-aws-credentials@v6
+                uses: aws-actions/configure-aws-credentials@v4
                 with:
-                    aws-region: ${{env.AWS-REGION}}
+                    aws-region: ${{env.AWS_REGION}}
                     role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
 
             -   name: Login to Amazon ECR #Logs into Amazon ECR so Docker can push images to the repository.
@@ -44,7 +44,9 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
                     --provenance=false \
                     --sbom=false \
                     -t ${{ env.ECR_URI }}:${{ github.sha }} \
-                    --push .
+                    -f ./deployment_aws/Dockerfile \
+                    --push \
+                    ./deployment_aws
 
             -   name: Update Lambda Function #Updates the Lambda function to use the newly pushed container image.
                 run: | 
