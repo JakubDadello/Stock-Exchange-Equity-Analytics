@@ -7,7 +7,7 @@ on:
 
 env: #Global environment variables used across all steps.
     AWS-REGION: eu-north-1
-    ECR_URI: ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/pqa-repository
+    ECR_URI: 798836978601.dkr.ecr.eu-north-1.amazonaws.com/pqa-repository
     LAMBDA_FUNCTION: pipeline-rf_provider 
 
 jobs: # Specifies the job and the virtual machine used to run the workflow.
@@ -40,7 +40,7 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
             -   name: Build and push image using buildx #Builds the Lambda container image, tags it with the commit SHA, and pushes it to ECR to avoid manifest mismatch errors
                 run: | 
                     docker buildx build \
-                    --platform linux/amd64 #
+                    --platform linux/amd64 \
                     --provenance=false \
                     --sbom=false \
                     -t ${{ env.ECR_URI }}:${{ github.sha }} \
@@ -48,6 +48,6 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
 
             -   name: Update Lambda Function #Updates the Lambda function to use the newly pushed container image.
                 run: | 
-                    aws lambda update-function-code
+                    aws lambda update-function-code \
                     --function-name ${{env.LAMBDA_FUNCTION}}
                     --image-uri ${{ env.ECR_URI }}:${{ github.sha }}
