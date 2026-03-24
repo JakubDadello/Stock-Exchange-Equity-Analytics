@@ -34,11 +34,11 @@ def lambda_handler(event, context):
     """
     global model
 
-    # Lazy Loading Strategy: Avoids expensive re-initialization during warm starts
+    # --- Lazy Loading Strategy: Avoids expensive re-initialization during warm starts --- 
     if model is None:
         model = load_model()
 
-    # Dynamic payload extraction: Supports both API Gateway (proxy) and direct invocation
+    # --- Dynamic payload extraction: Supports both API Gateway (proxy) and direct invocation --- 
     if "body" in event:
         body = json.loads(event["body"])
     else:
@@ -46,19 +46,19 @@ def lambda_handler(event, context):
 
     data = body.get("data")
     
-    # Input Validation: Crucial for production-grade robustness
+    # --- Input Validation: Crucial for production-grade robustness --- 
     if data is None:
         return {
             "statusCode": 400,
             "body": json.dumps({"error": "Missing 'data' field in request"})
         }
 
-    # Execute Prediction using the pre-loaded Scikit-Learn/Joblib pipeline
+    # --- Execute Prediction using the pre-loaded Scikit-Learn/Joblib pipeline --- 
     prediction = model.predict(data)
     label = prediction[0]
 
-    # Map classification label to business-logic response format
-    # Note: Using hardcoded probabilities for discrete classification results
+    # --- Map classification label to business-logic response format --- 
+    # --- Using hardcoded probabilities for discrete classification results --- 
     if label == "high":
         result = {"high": 100, "middle": 0, "low": 0}
     elif label == "middle":
@@ -66,9 +66,15 @@ def lambda_handler(event, context):
     else:
         result = {"high": 0, "middle": 0, "low": 100}
 
-    # Standard production return format for AWS Lambda integrated with API Gateway
+    # --- Standard production return format for AWS Lambda integrated with API Gateway --- 
     return {
         "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "POST, OPTIONS"
+
+        },
         "body": json.dumps(result)
     }
