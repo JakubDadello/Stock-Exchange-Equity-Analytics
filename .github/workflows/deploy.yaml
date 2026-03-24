@@ -21,7 +21,7 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
         steps:
             -   name: Checkout repository #Checks out the repository so the workflow can access the code.
                 uses: actions/checkout@v4
-                
+
             -   name: Configuration AWS credentials #Authenticates to AWS using OIDC and assumes the IAM role defined in secrets.
                 uses: aws-actions/configure-aws-credentials@v4
                 with:
@@ -39,6 +39,7 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
 
             -   name: Build and push image using buildx #Builds the Lambda container image, tags it with the commit SHA, and pushes it to ECR to avoid manifest mismatch errors
                 run: | 
+                    cd deployment_aws
                     docker buildx build \
                     --platform linux/amd64 \
                     --provenance=false \
