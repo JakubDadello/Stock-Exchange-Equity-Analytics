@@ -1,9 +1,14 @@
 AWSTemplateFormatVersion: 2010-09-09
 
+
 Resources:
+# ============================================================
+# IAM ROLE & PERMISSIONS
+# ============================================================
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
+      # Allows Lambda service to assume this role
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -12,6 +17,7 @@ Resources:
               Service: lambda.amazonaws.com
             Action:
               - sts:AssumeRole
+      # Standard policy for CloudWatch Logs access
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
@@ -22,24 +28,34 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:GetObject
+                # Best Practice: Narrow down resource access if possible
                 Resource: arn:aws:s3:::pqa-bucket/*
 
+# ============================================================
+# COMPUTE (LAMBDA FUNCTION)
+# ============================================================
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
       PackageType: Image
       Role: !GetAtt LambdaRole.Arn
+      # Dynamic ImageUri using Sub to handle different account/region deployments
       Code:
         ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/pqa-repository:latest"
       Timeout: 30
       MemorySize: 2048
       Architectures:
         - x86_64
-  
+
+# ============================================================
+# MONITORING & OBSERVABILITY
+# ============================================================
   LambdaLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
+      # Matches the default Lambda naming convention to ensure logs are captured
       LogGroupName: !Sub "/aws/lambda/${LambdaFunction}"
+      RetentionInDays: 14 # Professional standard to manage storage costs
 
   LambdaErrorMetric:
     Type: AWS::Logs::MetricFilter
@@ -50,14 +66,14 @@ Resources:
       -   MetricName: Lambda_func_errors
           MetricNamespace: PQA_metrics
           MetricValue: "1"
-  
+
   AlertTopic:
     Type: AWS::SNS::Topic
     Properties:
       TopicName: "PQA-alerts"
       Tags:
-        -   Key: project
-            Value: pqa 
+        - Key: project
+          Value: pqa 
 
   AlertSubscription:
     Type: AWS::SNS::Subscription
@@ -69,6 +85,7 @@ Resources:
   LambdaErrAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
+      AlarmDescription: "Triggers notification if Lambda reports multiple errors"
       AlarmActions: 
       -   !Ref AlertTopic
       AlarmName: LambdaErrAlarm
@@ -80,6 +97,9 @@ Resources:
       Threshold: 3 
       ComparisonOperator: GreaterThanOrEqualToThreshold 
 
+# ============================================================
+# API GATEWAY (INTERFACE)
+# ============================================================
   GatewayAPI:
     Type: AWS::ApiGatewayV2::Api
     Properties: 
@@ -93,7 +113,7 @@ Resources:
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt LambdaFunction.Arn
       PayloadFormatVersion: "2.0"
-     
+      
   GatewayAPIRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties: 
@@ -108,10 +128,20 @@ Resources:
       AutoDeploy: true
       StageName: development 
   
+  # Crucial: Allows API Gateway to trigger the Lambda function
   LambdaPermission:
     Type: AWS::Lambda::Permission
     Properties: 
       Action: lambda:InvokeFunction
       FunctionName: !Ref LambdaFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${GatewayAPI}/*/POST/prediction"
+      # Restricted SourceArn for better security posture
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${GatewayAPI}/*/*"
+
+# ============================================================
+# OUTPUTS (For Team Collaboration)
+# ============================================================
+Outputs:
+  ServiceEndpoint:
+    Description: "Public URL for the Prediction API"
+    Value: !Sub "https://${GatewayAPI}.execute-api.${AWS::Region}.amazonaws.com/development/prediction"
