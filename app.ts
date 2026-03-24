@@ -13,7 +13,6 @@ function updateProgressBars (results: any) {
     (document.getElementById("fill-low") as HTMLElement)!.textContent = low + "%";
 }
 
-
 async function predict () {
     const values = [
         Number((document.getElementById("net_income") as HTMLInputElement).value),
@@ -21,12 +20,12 @@ async function predict () {
         Number((document.getElementById("roe") as HTMLInputElement).value),
         Number((document.getElementById("roa") as HTMLInputElement).value),
         Number((document.getElementById("ebitda") as HTMLInputElement).value),
+        Number((document.getElementById("cumulation") as HTMLInputElement).value),
         String((document.getElementById("sector") as HTMLInputElement).value),
-        Number((document.getElementById("cumulation") as HTMLInputElement).value)
     ]
 
     try {
-        const res = await fetch ("https://<api-id>.execute-api.eu-central-1.amazonaws.com/development/prediction", 
+        const res = await fetch ("https://<api-id>.execute-api.eu-north-1.amazonaws.com/development/prediction", 
         {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -47,3 +46,5 @@ async function predict () {
 
     
 }
+
+(window as any).predict = predict; 
