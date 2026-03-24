@@ -46,8 +46,7 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
                     --sbom=false \
                     -t ${{ env.ECR_URI }}:${{ github.sha }} \
                     -f ./deployment_aws/Dockerfile \
-                    --push \
-                    ./deployment_aws
+                    --push .
 
             -   name: Update Lambda Function #Updates the Lambda function to use the newly pushed container image.
                 run: | 
