@@ -15,12 +15,12 @@ function updateProgressBars (results: any) {
 
 async function predict () {
     const values = [
-        Number((document.getElementById("net_income") as HTMLInputElement).value),
-        Number((document.getElementById("net_cash_flow") as HTMLInputElement).value),
-        Number((document.getElementById("roe") as HTMLInputElement).value),
-        Number((document.getElementById("roa") as HTMLInputElement).value),
-        Number((document.getElementById("ebitda") as HTMLInputElement).value),
-        Number((document.getElementById("cumulation") as HTMLInputElement).value),
+        Number((document.getElementById("net_income") as HTMLInputElement).value.replace(',', '.')),
+        Number((document.getElementById("net_cash_flow") as HTMLInputElement).value.replace(',', '.')),
+        Number((document.getElementById("roe") as HTMLInputElement).value.replace(',', '.')),
+        Number((document.getElementById("roa") as HTMLInputElement).value.replace(',', '.')),
+        Number((document.getElementById("ebitda") as HTMLInputElement).value.replace(',', '.')),
+        Number((document.getElementById("cumulation") as HTMLInputElement).value.replace(',', '.')),
         String((document.getElementById("sector") as HTMLInputElement).value),
     ]
 
