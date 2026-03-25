@@ -103,7 +103,7 @@ Resources:
 # ============================================================
 # API GATEWAY (INTERFACE)
 # ============================================================
-  GatewayAPI:
+  SecuredGatewayAPI:
     Type: AWS::ApiGatewayV2::Api
     Properties: 
       Name: pqa-gateway-api
@@ -121,7 +121,7 @@ Resources:
   GatewayAPIIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties: 
-      ApiId: !Ref GatewayAPI
+      ApiId: !Ref SecuredGatewayAPI
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt LambdaFunction.Arn
       PayloadFormatVersion: "2.0"
@@ -129,14 +129,14 @@ Resources:
   GatewayAPIRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties: 
-      ApiId: !Ref GatewayAPI
+      ApiId: !Ref SecuredGatewayAPI
       RouteKey: "POST /predict-v1"
       Target: !Sub "integrations/${GatewayAPIIntegration}"
 
   GatewayStage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
-      ApiId: !Ref GatewayAPI
+      ApiId: !Ref SecuredGatewayAPI
       AutoDeploy: true
       StageName: development 
   
@@ -148,7 +148,7 @@ Resources:
       FunctionName: !Ref LambdaFunction
       Principal: apigateway.amazonaws.com
       # Restricted SourceArn for better security posture
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${GatewayAPI}/*/*"
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SecuredGatewayAPI}/*/*"
 
 # ============================================================
 # OUTPUTS (For Team Collaboration)
@@ -156,4 +156,4 @@ Resources:
 Outputs:
   ServiceEndpoint:
     Description: "Public URL for the Prediction API"
-    Value: !Sub "https://${GatewayAPI}.execute-api.${AWS::Region}.amazonaws.com/development/predict-v1"
+    Value: !Sub "https://${SecuredGatewayAPI}.execute-api.${AWS::Region}.amazonaws.com/development/predict-v1"
