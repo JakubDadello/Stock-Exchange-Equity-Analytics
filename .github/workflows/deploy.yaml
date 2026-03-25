@@ -8,7 +8,7 @@ on:
 env: #Global environment variables used across all steps.
     AWS_REGION: eu-north-1
     ECR_URI: 798836978601.dkr.ecr.eu-north-1.amazonaws.com/pqa-repository
-    LAMBDA_FUNCTION: pqa-stack-LambdaFunction-vHd592yJ3Wic
+    STACK_NAME: pqa-stack
 
 jobs: # Specifies the job and the virtual machine used to run the workflow.
     deployment:
@@ -47,9 +47,12 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
                     -t ${{ env.ECR_URI }}:${{ github.sha }} \
                     -t ${{ env.ECR_URI }}:latest \
                     --push .
-
-            -   name: Update Lambda Function #Updates the Lambda function to use the newly pushed container image.
-                run: | 
-                    aws lambda update-function-code \
-                    --function-name ${{env.LAMBDA_FUNCTION}} \
-                    --image-uri ${{ env.ECR_URI }}:${{ github.sha }}
+            -   name: Deploy CloudFormation Stack 
+                uses: aws-actions/aws-cloudformation-github-deploy@v1
+                with:
+                    name: ${{ env.STACK_NAME }}
+                    template: deployment_aws/infra/template.yaml
+                    no-fail-on-empty-changeset: "1"
+                    capabilities: CAPABILITY_IAM,CAPABILITY_NAMED_IAM
+                    parameter-overrides: >-
+                        ImageUri=${{ env.ECR_URI }}:${{ github.sha }}
