@@ -63,7 +63,7 @@ function predict() {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("https://<api-id>.execute-api.eu-north-1.amazonaws.com/development/prediction", {
+                    return [4 /*yield*/, fetch("https://wbm2hiawv9.execute-api.eu-north-1.amazonaws.com/development/prediction", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ data: [values] })
