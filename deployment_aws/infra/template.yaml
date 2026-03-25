@@ -110,7 +110,7 @@ Resources:
       ProtocolType: HTTP
       CorsConfiguration:
         AllowOrigins:
-          - "http://localhost:3000" 
+          - "*" 
         AllowMethods:
           - POST
           - OPTIONS
@@ -130,7 +130,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Route
     Properties: 
       ApiId: !Ref GatewayAPI
-      RouteKey: "POST /prediction"
+      RouteKey: "POST /predict-v1"
       Target: !Sub "integrations/${GatewayAPIIntegration}"
 
   GatewayStage:
@@ -156,4 +156,4 @@ Resources:
 Outputs:
   ServiceEndpoint:
     Description: "Public URL for the Prediction API"
-    Value: !Sub "https://${GatewayAPI}.execute-api.${AWS::Region}.amazonaws.com/development/prediction"
+    Value: !Sub "https://${GatewayAPI}.execute-api.${AWS::Region}.amazonaws.com/development/predict-v1"
