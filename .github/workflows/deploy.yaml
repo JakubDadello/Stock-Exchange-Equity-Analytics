@@ -45,6 +45,7 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
                     --provenance=false \
                     --sbom=false \
                     -t ${{ env.ECR_URI }}:${{ github.sha }} \
+                    -t ${{ env.ECR_URI }}:latest \
                     --push .
 
             -   name: Update Lambda Function #Updates the Lambda function to use the newly pushed container image.
