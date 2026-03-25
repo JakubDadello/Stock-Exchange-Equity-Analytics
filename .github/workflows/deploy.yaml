@@ -7,7 +7,6 @@ on:
             - 'deployment_aws/**' 
             - 'src/**'
 
-
 env: #Global environment variables used across all steps.
     AWS_REGION: eu-north-1
     ECR_URI: 798836978601.dkr.ecr.eu-north-1.amazonaws.com/pqa-repository
