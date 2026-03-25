@@ -2,6 +2,7 @@ import os
 import boto3
 import joblib
 import json 
+import numpy as np 
 
 # Infrastructure Constants - Pointing to S3 assets managed via IaC 
 S3_BUCKET = "pqa-bucket"
@@ -53,9 +54,22 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Missing 'data' field in request"})
         }
 
-    # --- Execute Prediction using the pre-loaded Scikit-Learn/Joblib pipeline --- 
-    prediction = model.predict(data)
-    label = prediction[0]
+    feature_names = ['net_income', 'net_cash_flow', 'roe', 'roa', 'ebitda', 'cumulation', 'sector']
+
+    try:
+        row_values = data[0]
+        input_data = [dict(zip(feature_names, row_values))]
+
+        # --- Execute Prediction using the pre-loaded Scikit-Learn/Joblib pipeline --- 
+        prediction = model.predict(input_data)
+        label = prediction[0]
+
+    except Exception as e: 
+        print(f"Error during prediction: {e}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Prediction failed", "details": str(e)})
+        }
 
     # --- Map classification label to business-logic response format --- 
     # --- Using hardcoded probabilities for discrete classification results --- 
