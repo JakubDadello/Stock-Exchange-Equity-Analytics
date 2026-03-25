@@ -1,5 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 
+Parameters:
+  ImageUri:
+    Type: String
 
 Resources:
 # ============================================================
@@ -41,7 +44,7 @@ Resources:
       Role: !GetAtt LambdaRole.Arn
       # Dynamic ImageUri using Sub to handle different account/region deployments
       Code:
-        ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/pqa-repository:latest"
+        ImageUri: !Ref ImageUri 
       Timeout: 30
       MemorySize: 2048
       Architectures:
@@ -105,6 +108,15 @@ Resources:
     Properties: 
       Name: pqa-gateway-api
       ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins:
+          - "http://localhost:3000" 
+        AllowMethods:
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - "content-type"
+        MaxAge: 300
   
   GatewayAPIIntegration:
     Type: AWS::ApiGatewayV2::Integration
