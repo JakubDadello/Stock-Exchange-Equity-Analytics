@@ -8,7 +8,7 @@ on:
 env: #Global environment variables used across all steps.
     AWS_REGION: eu-north-1
     ECR_URI: 798836978601.dkr.ecr.eu-north-1.amazonaws.com/pqa-repository
-    LAMBDA_FUNCTION: pipeline-rf_provider 
+    LAMBDA_FUNCTION: pqa-stack-LambdaFunction-vHd592yJ3Wic
 
 jobs: # Specifies the job and the virtual machine used to run the workflow.
     deployment:
