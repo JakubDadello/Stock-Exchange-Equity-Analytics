@@ -2,7 +2,7 @@ import os
 import boto3
 import joblib
 import json 
-import numpy as np 
+import pandas as pd
 
 # Infrastructure Constants - Pointing to S3 assets managed via IaC 
 S3_BUCKET = "pqa-bucket"
@@ -55,11 +55,15 @@ def lambda_handler(event, context):
         }
 
     try:
-        input_array = np.array(data)
-        input_data_reshaped = input_array.reshape(1, -1)
+        feature_names = [
+            'net_income', 'net_cash_flow', 'roe', 'roa', 
+            'ebitda', 'cumulation', 'sector'
+        ]
+
+        df_input = pd.DataFrame(data, columns=feature_names)
 
         # --- Execute Prediction using the pre-loaded Scikit-Learn/Joblib pipeline --- 
-        prediction = model.predict(input_data_reshaped)
+        prediction = model.predict(df_input)
         label = prediction[0]
 
     except Exception as e: 
