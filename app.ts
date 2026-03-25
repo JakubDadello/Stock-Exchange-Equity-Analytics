@@ -24,8 +24,14 @@ async function predict () {
         String((document.getElementById("sector") as HTMLInputElement).value),
     ]
 
+    const API_URL = (import.meta as any).env.VITE_ENDPOINT_SERVICE;
+
     try {
-        const res = await fetch (process.env.ENDPOINT_SERVICE as string, 
+        if(!API_URL) {
+            throw new Error("API URL is not defined in environment variables");
+        }
+
+        const res = await fetch (API_URL as string, 
         {
             method: "POST",
             headers: {"Content-Type": "application/json"},
