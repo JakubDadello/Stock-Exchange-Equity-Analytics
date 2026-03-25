@@ -25,7 +25,7 @@ async function predict () {
     ]
 
     try {
-        const res = await fetch ("", 
+        const res = await fetch (process.env.ENDPOINT_SERVICE as string, 
         {
             method: "POST",
             headers: {"Content-Type": "application/json"},
