@@ -54,14 +54,12 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Missing 'data' field in request"})
         }
 
-    feature_names = ['net_income', 'net_cash_flow', 'roe', 'roa', 'ebitda', 'cumulation', 'sector']
-
     try:
-        row_values = data[0]
-        input_data = [dict(zip(feature_names, row_values))]
+        input_array = np.array(data)
+        input_data_reshaped = input_array.reshape(1, -1)
 
         # --- Execute Prediction using the pre-loaded Scikit-Learn/Joblib pipeline --- 
-        prediction = model.predict(input_data)
+        prediction = model.predict(input_data_reshaped)
         label = prediction[0]
 
     except Exception as e: 
