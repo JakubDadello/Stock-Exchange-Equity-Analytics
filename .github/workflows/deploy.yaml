@@ -50,5 +50,5 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
             -   name: Update Lambda Function #Updates the Lambda function to use the newly pushed container image.
                 run: | 
                     aws lambda update-function-code \
-                    --function-name ${{env.LAMBDA_FUNCTION}}
+                    --function-name ${{env.LAMBDA_FUNCTION}} \
                     --image-uri ${{ env.ECR_URI }}:${{ github.sha }}
