@@ -25,7 +25,7 @@ async function predict () {
     ]
 
     try {
-        const res = await fetch ("https://wbm2hiawv9.execute-api.eu-north-1.amazonaws.com/development/prediction", 
+        const res = await fetch ("", 
         {
             method: "POST",
             headers: {"Content-Type": "application/json"},
