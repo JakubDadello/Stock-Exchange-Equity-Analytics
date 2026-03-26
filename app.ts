@@ -47,7 +47,7 @@ async function predict () {
         updateProgressBars(results); 
 
         } catch (error) {
-           throw new Error ("Failed to load model")
+           throw new Error (error)
         }
 
     
