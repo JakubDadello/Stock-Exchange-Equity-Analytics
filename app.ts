@@ -47,7 +47,7 @@ async function predict () {
         updateProgressBars(results); 
 
         } catch (error) {
-           throw new Error (error)
+           throw new Error (error as string)
         }
 
     
