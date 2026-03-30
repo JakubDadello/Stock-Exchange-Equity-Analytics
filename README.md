@@ -32,7 +32,9 @@ To run this project locally, you can use either Docker (recommended) or a standa
 - `src/` - Python scripts for preprocessing data and training the final ML model
 - `reports/` – Power BI dashboards and related analytics outputs
 - `CRISP-DM.md` - detailed methodology workflow
-- `airflow/` – optional workflow automation layer used for scheduling, orchestrating, and automating data processing and model training pipelines.
+- `airflow/` –  workflow automation layer used for scheduling, orchestrating, and automating data processing and model training pipelines.
+- `deployment_aws` -
+- `.github` - 
 
 ## Tech Stack
 
@@ -42,7 +44,6 @@ To run this project locally, you can use either Docker (recommended) or a standa
 - Backend & Deployment: FastAPI, Pydantic, Uvicorn
 - Conterization & Deployment: Docker
 - Cloud Technology: Amazon Web Service (AWS)
->>>>>>> 6e10e057f5633264692b1aded85495f1fe9fdc03
 - Workflow orchestration & automation: Apache Airflow
 
 For the full CRISP-DM methodology, see [CRISP-DM.md](CRISP-DM.md)
