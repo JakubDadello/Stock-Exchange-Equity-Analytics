@@ -137,7 +137,7 @@ The model, developed using the CRISP-DM methodology, is deployed on AWS and is p
 ![High_level_diagram](/reports/High_level_diagram.drawio.png)
 
 ### technical diagram with CloudFormation Resources (IaC)
-
+![technical_diagram_IaC](/reports/technical_diagram_IaC.drawio.png)
 
 ## Next steps 
 1. Increase the number of numerical and categorical attributes
