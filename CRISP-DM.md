@@ -134,7 +134,7 @@ The model, developed using the CRISP-DM methodology, is deployed on AWS and is p
 
 ## Deployment architecture
 ### High-level deployment diagram with AWS icons 
-
+![High_level_diagram](/reports/High_level_diagram.drawio.png)
 
 ### technical diagram with CloudFormation Resources (IaC)
 
