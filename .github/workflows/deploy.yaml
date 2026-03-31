@@ -49,6 +49,7 @@ jobs: # Specifies the job and the virtual machine used to run the workflow.
                     -t ${{ env.ECR_URI }}:${{ github.sha }} \
                     -t ${{ env.ECR_URI }}:latest \
                     --push .
+                    
             -   name: Deploy CloudFormation Stack 
                 uses: aws-actions/aws-cloudformation-github-deploy@v1
                 with:
