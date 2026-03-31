@@ -130,19 +130,22 @@ The Random Forest model indicates that Net income is the most fluential feature 
 ---
 
 # Deployment 
+The model, developed using the CRISP-DM methodology, is deployed on AWS and is production-ready at a baseline level, but continues to undergo further development to improve performance and robustness. Future work includes feature expansion, dataset enlargement, and further optimization of ensemble methods.
 
-The analytical model developed in this project, based on the CRISP-DM methodology, is of a prototype nature and is not yet suitable for full deployment.
-It requires a number of further actions, primarily related to:
-1. Modifying its structure, including increasing the number of numerical and categorical attributes. This would allow the model to take into account a larger set of factors determining its attractiveness for potential capital investments.
-2. Expanding the dataset by including more companies, which would enhance the system’s applicability to international financial markets.
-3. Further exploration of ensemble methods: While Random Forest performed best in this iteration, further tuning of its hyperparameters and testing other bagging-based classifiers could stabilize the results even more.
-4. Within ensemble methods, boosting algorithms—including adaptive boosting (AdaBoost) and gradient boosting (XGBoost) - are also worth testing. A related implementation of the same problem using LightGBM within the ML.NET ecosystem is available here:
+## Deployment architecture
+### High-level deployment diagram with AWS icons 
+
+
+### technical diagram with CloudFormation Resources (IaC)
+
+
+## Next steps 
+1. Increase the number of numerical and categorical attributes
+2. Include more companies, especially from international markets
+3. Further tuning of Random Forest’s hyperparameters
+4. Test other bagging-based classifiers
+5. Boosting algorithms like adaptive boosting (AdaBoost) and gradient boosting (XGBoost)
+6. Increase in model structural complexity
+
+A related implementation of the same problem using LightGBM within the ML.NET ecosystem is available here:
 https://github.com/JakubDadello/Polish-Equity-Analytics-.NET-LightGBM-Predictor.git
-5. With an increase in model structural complexity, deep learning approaches, such as the previously applied perceptron neural network, might achieve even greater effectiveness.
-
-The project aimed to create a classification system that automatically evaluates a company’s investment attractiveness. This objective was largely met.
-The evaluation method involved first grouping companies based on the temporal aspect of their financial statements and then by sector membership. Deterministic class assignment was based on a fundamental statistical measure of central tendency—the median of the relevant financial indicators.
-
-For further development of the Random Forest model, the key areas for optimization include hyperparameter tuning, feature engineering, and rebalancing of class distributions.
-
-Although the model itself remains in the prototype phase, the project includes a fully functional technical deployment pipeline (FastAPI & Docker), ensuring that once the model is refined, it can be seamlessly integrated into a production environment
