@@ -1,4 +1,4 @@
-# Polish-Equity-Analytics
+# Stock-Exchange-Equity-Analytics
 
 ## Project Description
 
