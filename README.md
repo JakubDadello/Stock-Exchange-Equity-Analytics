@@ -27,7 +27,6 @@ Although the dataset comes from companies listed on the Warsaw Stock Exchange, t
 - Language: Python 3.10
 - Libraries: Scikit-learn, Pandas, NumPy, Matplotlib, TensorFlow (MLP)
 - Tools: Power BI, PostgreSQL 
-- Backend & Deployment: FastAPI, Pydantic, Uvicorn
 - Conterization & Deployment: Docker
 - Cloud Technology: Amazon Web Service (AWS)
 - Workflow orchestration & automation: Apache Airflow
