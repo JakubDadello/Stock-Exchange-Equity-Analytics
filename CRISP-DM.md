@@ -139,6 +139,14 @@ The model, developed using the CRISP-DM methodology, is deployed on AWS and is p
 ### technical diagram with CloudFormation Resources (IaC)
 ![technical_diagram_IaC](/reports/technical_diagram_IaC.drawio.png)
 
+## Justification 
+I chose a serverless architecture because it provides a fully managed, scalable, and cost‑efficient deployment model that eliminates the need to maintain traditional server infrastructure. AWS Lambda and API Gateway automatically handle scaling, availability, and operational overhead, allowing the application to respond efficiently to variable workloads without manual intervention.
+
+The pay‑per‑use pricing model significantly reduces operational costs, especially for applications with intermittent or unpredictable traffic. Serverless services also integrate seamlessly with GitHub Actions and AWS CloudFormation, enabling a secure, keyless CI/CD pipeline based on OIDC authentication and declarative infrastructure.
+
+This approach results in a clean, automated deployment process with minimal operational burden, strong security guarantees, and a highly maintainable infrastructure that aligns well with the functional requirements of the application.
+
+
 ## Next steps 
 1. Increase the number of numerical and categorical attributes
 2. Include more companies, especially from international markets
