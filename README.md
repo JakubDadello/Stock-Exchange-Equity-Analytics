@@ -11,20 +11,6 @@ Although the dataset comes from companies listed on the Warsaw Stock Exchange, t
 
 ## How to Run
 
-To run this project locally, you can use either Docker (recommended) or a standard Python environment.
-
-### Using Docker 
-* **Docker Compose:**
-  ```bash
-  docker-compose up --build
-
-* **Build the image:**
-  ```bash
-  docker build -t pqa_python_api .
-* **Run the container:**
-  ```bash
-  docker run -d -p 8000:8000 --name pqa_python_container pqa_python_api
-
 ## Repository Structure
 - `data/` - raw, labeled and preprocessed datasets (see `data/README.md`)
 - `ETL/` - responsible for data extraction, joining financial tables, and initial cleaning before the machine learning phase.
