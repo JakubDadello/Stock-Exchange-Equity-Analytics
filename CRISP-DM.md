@@ -147,7 +147,7 @@ The pay‑per‑use pricing model significantly reduces operational costs, espec
 This approach results in a clean, automated deployment process with minimal operational burden, strong security guarantees, and a highly maintainable infrastructure that aligns well with the functional requirements of the application.
 
 
-## Next steps 
+## Forward steps 
 1. Increase the number of numerical and categorical attributes
 2. Include more companies, especially from international markets
 3. Further tuning of Random Forest’s hyperparameters
