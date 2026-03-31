@@ -33,8 +33,8 @@ To run this project locally, you can use either Docker (recommended) or a standa
 - `reports/` – Power BI dashboards and related analytics outputs
 - `CRISP-DM.md` - detailed methodology workflow
 - `airflow/` –  workflow automation layer used for scheduling, orchestrating, and automating data processing and model training pipelines.
-- `deployment_aws` -
-- `.github` - 
+- `deployment_aws` - contains the CloudFormation IaC used to provision the entire AWS backend.
+- `.github` - holds GitHub Actions workflows that automate build and deployment.
 
 ## Tech Stack
 
