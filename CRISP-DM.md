@@ -157,4 +157,4 @@ This approach results in a clean, automated deployment process with minimal oper
 6. Increase in model structural complexity
 
 A related implementation of the same problem using LightGBM within the ML.NET ecosystem is available here:
-https://github.com/JakubDadello/Polish-Equity-Analytics-.NET-LightGBM-Predictor.git
+https://github.com/JakubDadello/Stock-Exchange-Equity-Analytics-in-ML.NET.git
