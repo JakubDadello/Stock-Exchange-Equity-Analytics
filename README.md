@@ -32,5 +32,6 @@ Although the dataset comes from companies listed on the Warsaw Stock Exchange, t
 - IaC: Cloud Formation in AWS
 - CI/CD: GitHub Actions
 - Workflow orchestration & automation: Apache Airflow
+- Frontend/UI: TypeScript/JavaScript, HTML, CSS
 
 For the full CRISP-DM methodology, see [CRISP-DM.md](CRISP-DM.md)
