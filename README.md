@@ -29,6 +29,8 @@ Although the dataset comes from companies listed on the Warsaw Stock Exchange, t
 - Tools: Power BI, PostgreSQL 
 - Conterization & Deployment: Docker
 - Cloud Technology: Amazon Web Service (AWS)
+- IaC: Cloud Formation in AWS
+- CI/CD: GitHub Actions
 - Workflow orchestration & automation: Apache Airflow
 
 For the full CRISP-DM methodology, see [CRISP-DM.md](CRISP-DM.md)
