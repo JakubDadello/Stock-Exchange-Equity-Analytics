@@ -36,21 +36,39 @@ async function predict () {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({data: [values]})
-        })
+        });
 
         if(!res.ok) {
             throw new Error("Failed to load model")
         }
 
         const results = await res.json();
-
         updateProgressBars(results); 
 
         } catch (error) {
-           throw new Error (error as string)
+            throw new Error (error as string)
         }
 
-    
+}
+
+async function generate_report () {
+
+    const interpretRes = await fetch ("/api/interpret", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({result: results. label})
+        
+    });
+
+    if (!interpretRes.ok) {
+        throw new Error("Failed to generate the report")
+    }
+
+    const interpretData = await interpretRes.json(); 
+
+    (document.getElementById("llm-output") as HTMLElement).textContent =
+        interpretData.explanation;
+
 }
 
 (window as any).predict = predict; 
