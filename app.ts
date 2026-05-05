@@ -1,3 +1,5 @@
+let lastResults: any = null;
+
 function updateProgressBars (results: any) {
     const high = results.high;
     const middle = results.middle;
@@ -43,6 +45,9 @@ async function predict () {
         }
 
         const results = await res.json();
+
+        lastResults = results; 
+
         updateProgressBars(results); 
 
         } catch (error) {
@@ -53,10 +58,18 @@ async function predict () {
 
 async function generate_report () {
 
-    const interpretRes = await fetch ("/api/interpret", {
+    if (!lastResults) {
+        throw new Error("No prediction results available. Run prediction first.");
+    }
+
+    if (!lastResults.label) {
+        throw new Error("Prediction results do not contain a label.");
+    }
+
+    const interpretRes = await fetch ("http://localhost:3000/api/interpret", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({result: results. label})
+        body: JSON.stringify({result: lastResults.label})
         
     });
 
@@ -66,9 +79,14 @@ async function generate_report () {
 
     const interpretData = await interpretRes.json(); 
 
-    (document.getElementById("llm-output") as HTMLElement).textContent =
-        interpretData.explanation;
+    const LLM_output = document.getElementById("llm-output")
 
+    if (LLM_output) {
+        LLM_output.textContent = interpretData.explanation;
+    } else {
+        console.error("Element #llm-output not found") 
+    }
 }
 
 (window as any).predict = predict; 
+(window as any).generate_report = generate_report; 
