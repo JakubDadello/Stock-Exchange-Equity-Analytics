@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title> Stock Exchange Equity Analytics </title>
         <link rel="stylesheet" href="style.css">
-        <script type="module" src="./app.ts"></script>
+        
     </head>
 
     <body> 
@@ -66,15 +66,17 @@
                         <div class="progress-fill" id="fill-low"> 0% </div>
                     </div>
                 </div>
+                <div> 
+                    <button onclick="generate_report()"> Generate the report </button>
+                    <div id="llm-output"> </div>
+                </div>
             </div>
 
-            <div> 
-                <button onclick="generate_report()"> Generate the report </button>
-                <div id="llm-output"> </div>
-            </div>
         </section>
    
         <footer class="footer-class">
         </footer>
+
+        <script type="module" src="./app.js"></script>
     </body>
 </html>
