@@ -62,14 +62,16 @@ async function generate_report () {
         throw new Error("No prediction results available. Run prediction first.");
     }
 
-    if (!lastResults.label) {
+    const label = Object.keys(lastResults).find(key => lastResults[key] === 100); 
+
+    if (!label) {
         throw new Error("Prediction results do not contain a label.");
     }
 
     const interpretRes = await fetch ("http://localhost:3000/api/interpret", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({result: lastResults.label})
+        body: JSON.stringify({label: label})
         
     });
 
