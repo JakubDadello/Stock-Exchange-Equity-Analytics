@@ -50,6 +50,8 @@ async function predict () {
 
         updateProgressBars(results); 
 
+        (document.getElementById("btn-generate-report") as HTMLButtonElement).disabled = false; 
+
         } catch (error) {
             throw new Error (error as string)
         }
