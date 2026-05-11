@@ -5,7 +5,9 @@ import cors from 'cors';
 import process from "node:process";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "*",
+}));
 app.use(express.json());
 
 const client = new OpenAI({ 
@@ -23,8 +25,8 @@ app.post("/api/interpret", async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Missing 'result' in request body" });
         }
    
+        //user prompt 
         const prompt =` Interpret the financial risk level:: "${result}".
-                        Act as a senior credit analyst from a firm like Moody's or S&P.
                         - If "low": focus on strong fundamentals and high capacity to meet obligations.
                         - If "middle": mention adequate protection but potential vulnerability to economic shifts.
                         - If "high": emphasize significant credit risk and limited margin for safety.
@@ -32,10 +34,10 @@ app.post("/api/interpret", async (req: Request, res: Response) => {
 
         const response = await client.chat.completions.create({
 
-            model: "gpt-4o",
+            model: "gpt-4o-mini",
             messages: [
-                { role: "system", content: "You are a helpful assistant." }, //system prompt
-                { role: "user", content: prompt } //user prompt 
+                { role: "system", content: "You are a senior credit risk analyst a firm like Moody's or S&P. You write concise financial risk assessments."}, //system prompt
+                { role: "user", content: prompt } 
             ],
 
             temperature: 0.7
