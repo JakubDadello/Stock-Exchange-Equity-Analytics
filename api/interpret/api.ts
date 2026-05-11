@@ -4,6 +4,8 @@ import type {Request, Response} from 'express';
 import cors from 'cors';
 import process from "node:process";
 
+import "dotenv/config";
+
 const app = express();
 app.use(cors({
     origin: "*",
