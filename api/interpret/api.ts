@@ -1,6 +1,7 @@
 import OpenAI from "openai";
-import express, {Request, Response} from 'express'
-import cors from 'cors'
+import express from 'express';
+import type {Request, Response} from 'express'; 
+import cors from 'cors';
 import process from "node:process";
 
 const app = express();
@@ -8,10 +9,12 @@ app.use(cors());
 app.use(express.json());
 
 const client = new OpenAI({ 
-    apiKey: process.env.OPENAI_API_KEY 
+    apiKey: process.env.OPENAI_API_KEY
 });
 
 app.post("/api/interpret", async (req: Request, res: Response) => {
+
+    console.log("Connection has been established");
 
     try {
         const { result } = req.body;
@@ -20,12 +23,12 @@ app.post("/api/interpret", async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Missing 'result' in request body" });
         }
    
-        const prompt =` You receive a risk level: "${result}".
-                        Explain it to the user in a friendly, simple way.
-                        - low = low risk
-                        - middle = medium risk
-                        - high = high risk `; 
-
+        const prompt =` Interpret the financial risk level:: "${result}".
+                        Act as a senior credit analyst from a firm like Moody's or S&P.
+                        - If "low": focus on strong fundamentals and high capacity to meet obligations.
+                        - If "middle": mention adequate protection but potential vulnerability to economic shifts.
+                        - If "high": emphasize significant credit risk and limited margin for safety.
+                        Provide a concise, professional assessment in 3-4 sentences.`;
 
         const response = await client.chat.completions.create({
 
@@ -39,9 +42,14 @@ app.post("/api/interpret", async (req: Request, res: Response) => {
 
         });
 
-         res.status(200).json({
-            explanation: response.choices[0].message.content
+        console.log(`Prompt: ${response.usage?.prompt_tokens}`)
+        console.log(`Generated: ${response.usage?.completion_tokens}`)
+        console.log(`Sum ${response.usage?.total_tokens}`)
+
+        res.status(200).json({
+            explanation: response.choices[0].message.content //chat.completion object
         })
+        
     } catch (error: any) {
         console.error("OpenAI API Error:", error.message);
         res.status(500).json({  //Internal Server Error 
@@ -52,7 +60,7 @@ app.post("/api/interpret", async (req: Request, res: Response) => {
 
 });
 
-const port = 3000; 
+const port = 3001; 
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
