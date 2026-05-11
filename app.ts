@@ -56,7 +56,7 @@ async function predict () {
             throw new Error (error as string)
         }
 
-}
+} s
 
 async function generate_report () {
 
