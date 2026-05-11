@@ -187,7 +187,7 @@ button:active {
 }
 
 /* OUTPUT */
-#output_data {
+.output_data {
     width: 100%;
     max-width: 1000px;
     background: rgba(0,0,0,0.4);
@@ -195,7 +195,8 @@ button:active {
     padding: 15px;
     border-radius: 10px;
     overflow-x: auto;
-    font-size: 13px;
+    font-size: 15px;
+    margin-top: 20px;
 }
 
 /* MOBILE */
