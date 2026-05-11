@@ -1,10 +1,10 @@
+import "dotenv/config";
+
 import OpenAI from "openai";
 import express from 'express';
 import type {Request, Response} from 'express'; 
 import cors from 'cors';
 import process from "node:process";
-
-import "dotenv/config";
 
 const app = express();
 app.use(cors({
@@ -21,14 +21,14 @@ app.post("/api/interpret", async (req: Request, res: Response) => {
     console.log("Connection has been established");
 
     try {
-        const { result } = req.body;
+        const { label } = req.body;
 
-        if (!result) {
+        if (!label) {
             return res.status(400).json({ error: "Missing 'result' in request body" });
         }
    
         //user prompt 
-        const prompt =` Interpret the financial risk level:: "${result}".
+        const prompt =` Interpret the financial risk level:: "${label}".
                         - If "low": focus on strong fundamentals and high capacity to meet obligations.
                         - If "middle": mention adequate protection but potential vulnerability to economic shifts.
                         - If "high": emphasize significant credit risk and limited margin for safety.
