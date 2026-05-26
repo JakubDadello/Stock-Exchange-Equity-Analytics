@@ -138,7 +138,7 @@ Icons: AWS (aws.amazon.com/architecture/icons) + Freepik – Flaticon
 ![High_level_diagram](/reports/High_level_diagram.drawio.png)
 
 ### technical diagram with CloudFormation Resources (IaC)
-![High_level_diagram_2](/reports/High_level_diagram_2.drawio.pn)
+![High_level_diagram_2](/reports/High_level_diagram_2.drawio.png)
 
 ## Justification 
 I chose a serverless architecture because it provides a fully managed, scalable, and cost‑efficient deployment model that eliminates the need to maintain traditional server infrastructure. AWS Lambda and API Gateway automatically handle scaling, availability, and operational overhead, allowing the application to respond efficiently to variable workloads without manual intervention.
