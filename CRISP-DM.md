@@ -133,12 +133,12 @@ The Random Forest model indicates that Net income is the most fluential feature 
 The model, developed using the CRISP-DM methodology, is deployed on AWS and is production-ready at a baseline level, but continues to undergo further development to improve performance and robustness. Future work includes feature expansion, dataset enlargement, and further optimization of ensemble methods.
 
 ## Deployment architecture
-### High-level deployment diagram with AWS icons 
+### High-level deployment diagram with AWS icons (current architecture)
 Icons: AWS (aws.amazon.com/architecture/icons) + Freepik – Flaticon
 ![High_level_diagram](/reports/High_level_diagram.drawio.png)
 
 ### technical diagram with CloudFormation Resources (IaC)
-![technical_diagram_IaC](/reports/technical_diagram_IaC.drawio.png)
+![High_level_diagram_2](/reports/High_level_diagram_2.drawio.pn)
 
 ## Justification 
 I chose a serverless architecture because it provides a fully managed, scalable, and cost‑efficient deployment model that eliminates the need to maintain traditional server infrastructure. AWS Lambda and API Gateway automatically handle scaling, availability, and operational overhead, allowing the application to respond efficiently to variable workloads without manual intervention.
