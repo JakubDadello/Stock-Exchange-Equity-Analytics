@@ -147,6 +147,8 @@ The pay‑per‑use pricing model significantly reduces operational costs, espec
 
 This approach results in a clean, automated deployment process with minimal operational burden, strong security guarantees, and a highly maintainable infrastructure that aligns well with the functional requirements of the application.
 
+The scalable architecture diagram represents a scenario in which application traffic grows substantially, necessitating the use of SQS and DynamoDB.
+
 
 ## Forward steps 
 1. Increase the number of numerical and categorical attributes
