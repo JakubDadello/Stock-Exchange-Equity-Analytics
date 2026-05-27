@@ -2,7 +2,7 @@
 
 ## Project Description
 
-Developed a machine learning model to classify investment ratings of 370 publicly listed Polish companies based on financial indicators and sector-specific characteristics.
+Developed a machine learning model to classify investment ratings of publicly listed companies based on financial indicators and sector-specific characteristics, extended to include firms from multiple international markets.
 
 Built a complete data analysis and modeling pipeline, including data preprocessing, feature engineering, and model training to predict investment categories (low, medium, high).
 
