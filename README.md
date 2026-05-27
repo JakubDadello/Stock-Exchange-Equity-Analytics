@@ -2,11 +2,13 @@
 
 ## Project Description
 
-Developed a machine learning model to classify investment ratings of publicly listed companies based on financial indicators and sector-specific characteristics, extended to include firms from multiple international markets.
+Developed a machine learning model to classify investment ratings of publicly listed companies based on financial indicators and sector-specific characteristics with planned extension to multiple international markets. 
 
-Built a complete data analysis and modeling pipeline, including data preprocessing, feature engineering, and model training to predict investment categories (low, medium, high).
+Built a complete data analysis and modeling pipeline, including data preprocessing, feature engineering, and model training to predict investment categories (low, medium, high). Deployed on AWS using Infrastructure as Code (IaC). 
 
-Although the dataset comes from companies listed on the Warsaw Stock Exchange, the project demonstrates transferable data science and financial analysis skills. Financial indicators such as ROA, EBITDA, and leverage ratios are standardized worldwide, making the modeling approach applicable to global financial markets.
+Applied classification algorithms to identify patterns in financial data and support data-driven investment decision-making.
+
+Although the dataset is based on companies listed on the Warsaw Stock Exchange, the project focuses on widely used financial indicators such as ROA, EBITDA margins, and leverage ratios, which are common across global equity markets. This allows the methodology and modeling approach to be adapted to other regions with similar financial reporting standards.
 
 
 ## How to Run
