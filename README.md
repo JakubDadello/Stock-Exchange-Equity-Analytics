@@ -11,8 +11,6 @@ Applied classification algorithms to identify patterns in financial data and sup
 Although the dataset is based on companies listed on the Warsaw Stock Exchange, the project focuses on widely used financial indicators such as ROA, EBITDA margins, and leverage ratios, which are common across global equity markets. This allows the methodology and modeling approach to be adapted to other regions with similar financial reporting standards.
 
 
-## How to Run
-
 ## Repository Structure
 - `data/` - raw, labeled and preprocessed datasets (see `data/README.md`)
 - `ETL/` - responsible for data extraction, joining financial tables, and initial cleaning before the machine learning phase.
