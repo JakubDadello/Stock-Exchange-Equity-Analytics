@@ -98,7 +98,6 @@ async function generate_report(result: PredictionResult) {
         method: "POST",
         headers: {
             "Content-Type": "application/json" ,
-            "secret-api-key": "public-frontend-token",
         },
         body: JSON.stringify({ label })
     });
