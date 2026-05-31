@@ -92,8 +92,7 @@ async function generate_report(result: PredictionResult) {
     }
 
     const INTERPRET_URL =
-        (import.meta as any).env.VITE_INTERPRET_ENDPOINT ||
-        "http://localhost:3001/api/interpret";
+        (import.meta as any).env.VITE_INTERPRET_ENDPOINT;
 
     const res = await fetch(INTERPRET_URL, {
         method: "POST",
