@@ -12,10 +12,6 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     if(req.method !== "POST") {
         return res.status(405).json({error: "Method not allowed"});
     }
-
-    if(req.headers["secret-api-key"] !== process.env.SECRET_API_KEY) {
-        return res.status(401).json({error: "Unauthorized" })
-    }
  
     try {
         const { label } = req.body;
