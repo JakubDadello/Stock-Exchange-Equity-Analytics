@@ -96,7 +96,9 @@ async function generate_report(result: PredictionResult) {
 
     const res = await fetch(INTERPRET_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "secret-api-key": (import.meta as any).env.VITE_SECRET_API_KEY, 
+        },
         body: JSON.stringify({ label })
     });
 
