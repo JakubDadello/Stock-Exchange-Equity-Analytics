@@ -1,25 +1,18 @@
 import "dotenv/config";
 
 import OpenAI from "openai";
-import express from 'express';
-import type {Request, Response} from 'express'; 
-import cors from 'cors';
-import process from "node:process";
-
-const app = express();
-app.use(cors({
-    origin: "*",
-}));
-app.use(express.json());
+import type {VercelRequest, VercelResponse} from '@vercel/node'; 
 
 const client = new OpenAI({ 
     apiKey: process.env.OPENAI_API_KEY
 });
 
-app.post("/api/interpret", async (req: Request, res: Response) => {
+export default async function (req: VercelRequest, res: VercelResponse) {
 
-    console.log("Connection has been established");
-
+    if(req.method !== "POST") {
+        return res.status(405).json({error: "Method not allowed"});
+    }
+ 
     try {
         const { label } = req.body;
 
@@ -61,13 +54,4 @@ app.post("/api/interpret", async (req: Request, res: Response) => {
             details: error.message 
         });
     }
-
-});
-
-const port = 3001; 
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
-
-// export default app;
+}
