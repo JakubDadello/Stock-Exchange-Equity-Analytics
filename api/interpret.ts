@@ -14,14 +14,29 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     }
  
     try {
-        const { label } = req.body;
+        const { label, turnstileToken  } = req.body;
 
-        if (!label) {
-            return res.status(400).json({ error: "Missing 'result' in request body" });
+        if(!label || !turnstileToken ) {
+            return res.status(400).json({ error: "Missing data in request body" });
         }
-   
+
+        const verify = await fetch(
+                "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `secret=${process.env.TURNSTILE_SECRET}&response=${turnstileToken}`
+            }
+        );
+
+        const outcome = await verify.json();
+
+        if (!outcome.success) {
+            return res.status(401).json({ error: "Turnstile verification failed" });
+        }
+
         //user prompt 
-        const prompt =` Interpret the financial risk level:: "${label}".
+        const prompt =` Interpret the financial risk level: "${label}".
                         - If "low": focus on strong fundamentals and high capacity to meet obligations.
                         - If "middle": mention adequate protection but potential vulnerability to economic shifts.
                         - If "high": emphasize significant credit risk and limited margin for safety.
