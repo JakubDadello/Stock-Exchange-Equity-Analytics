@@ -1,8 +1,8 @@
 # Stock-Exchange-Equity-Analytics
 
-## Project Description
-
 tagline: Fast Investment Assessment Engine
+
+## Project Description
 
 Developed a machine learning model to classify investment ratings of publicly listed companies based on financial indicators and sector-specific characteristics with planned extension to multiple international markets. 
 
