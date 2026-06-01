@@ -94,12 +94,14 @@ async function generate_report(result: PredictionResult) {
     const INTERPRET_URL =
         (import.meta as any).env.VITE_INTERPRET_ENDPOINT;
 
+    const turnstileToken = turnstile.getResponse();
+
     const res = await fetch(INTERPRET_URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json" ,
         },
-        body: JSON.stringify({ label })
+        body: JSON.stringify({ label, turnstileToken })
     });
 
     if (!res.ok) {
