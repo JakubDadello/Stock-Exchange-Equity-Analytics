@@ -37,9 +37,9 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
         //user prompt 
         const prompt =` Interpret the financial risk level: "${label}".
-                        - If "low": focus on strong fundamentals and high capacity to meet obligations.
+                        - If "low": emphasize significant credit risk and limited margin for safety. 
                         - If "middle": mention adequate protection but potential vulnerability to economic shifts.
-                        - If "high": emphasize significant credit risk and limited margin for safety.
+                        - If "high": focus on strong fundamentals and high capacity to meet obligations.
                         Provide a concise, professional assessment in 3-4 sentences.`;
 
         const response = await client.chat.completions.create({
