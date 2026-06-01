@@ -1,6 +1,6 @@
 # Stock-Exchange-Equity-Analytics
 
-tagline: Fast Investment Assessment Engine
+tagline (UI): Fast Investment Assessment Engine
 
 ## Project Description
 
