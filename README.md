@@ -31,7 +31,7 @@ Link to the website: stock-exchange-equity-analytics.vercel.app
 
 - Language: Python 3.10
 - Libraries: Scikit-learn, Pandas, NumPy, Matplotlib, TensorFlow (MLP)
-- Tools: Power BI, PostgreSQL 
+- Database: PostgreSQL
 - Containerization: Docker
 - Deployment: Vercel, Docker
 - Cloud Technology: Amazon Web Service (AWS)
