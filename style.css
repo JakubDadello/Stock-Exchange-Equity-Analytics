@@ -199,6 +199,12 @@ button:active {
     margin-top: 20px;
 }
 
+.note {
+    color: #e2e8f0;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
 /* MOBILE */
 @media (max-width: 768px) {
     body {
