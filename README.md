@@ -2,6 +2,8 @@
 
 ## Project Description
 
+tagline: Fast Investment Assessment Engine
+
 Developed a machine learning model to classify investment ratings of publicly listed companies based on financial indicators and sector-specific characteristics with planned extension to multiple international markets. 
 
 Built a complete data analysis and modeling pipeline, including data preprocessing, feature engineering, and model training to predict investment categories (low, medium, high). Deployed on AWS using Infrastructure as Code (IaC). 
