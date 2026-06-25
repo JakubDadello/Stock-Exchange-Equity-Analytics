@@ -1,0 +1,295 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  ImageUri:
+    Type: String
+
+Resources:
+  # ============================================================
+  # IAM ROLE & PERMISSIONS
+  # ============================================================
+
+  # IAM Role for Lambda
+  LambdaAthenaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaAthenaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+      # IAM Permissions for Lambda
+      Policies:
+        - PolicyName: LambdaExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+
+            # Athena API
+            - Effect: Allow
+              Action: 
+                - athena:StartQueryExecution
+                - athena:GetQueryExecution
+                - athena:GetQueryResults
+              Resource: "*"
+
+            # S3 API
+            - Effect: Allow
+              Action: 
+                - s3:GetObject
+                - s3:ListBucket
+              Resource:
+                - arn:aws:s3:::attempt-bucket-mlops-engine/*
+
+  # IAM Role for Glue Job 
+  GlueJobRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: GlueJobRole 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow 
+            Principal:
+              Service:
+                - glue.amazonaws.com
+            Action: 
+              - sts:AssumeRole
+      
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+      
+      # IAM Permissions for Glue
+      Policies:
+        - PolicyName: GlueJobS3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:  #get access to S3
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - arn:aws:s3:::attempt-bucket-mlops-engine
+                  - arn:aws:s3:::attempt-bucket-mlops-engine/* 
+  
+  # IAM Role for Glue Crawler
+  GlueCrawlerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: GlueCrawlerRole 
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow 
+            Principal:
+              Service:
+                - glue.amazonaws.com
+            Action: 
+              - sts:AssumeRole
+      
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+      
+      # IAM Permissions for Glue Crawler
+      Policies:
+        - PolicyName: GlueCrawlerS3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:  
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - arn:aws:s3:::attempt-bucket-mlops-engine
+                  - arn:aws:s3:::attempt-bucket-mlops-engine/* 
+
+  # IAM Role for SageMaker
+  SageMakerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      RoleName: SageMakerExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 
+                - sagemaker.amazonaws.com
+            Action:
+              sts:AssumeRole
+      
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+              
+  # ============================================================
+  # ATHENA WORK GROUP 
+  # ============================================================
+  AthenaWorkGroup:
+    Type: AWS::Athena::WorkGroup
+    Properties: 
+      Description: Workgroup for SQL transformations
+      Name: Athena_SQL_Engine-WorkGroup
+      State: ENABLED 
+      WorkGroupConfiguration:
+        EnforceWorkGroupConfiguration: true 
+        ResultConfiguration:
+          OutputLocation: "s3://attempt-bucket-mlops-engine/athena-results/"
+
+  # ============================================================
+  # GlUE JOBS
+  # ============================================================
+  GlueJobs:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: ETL_Tool
+      Command: 
+        Name: glueetl 
+        PythonVersion: "3"
+        ScriptLocation: "s3://attempt-bucket-mlops-engine/scripts/preprocessing.py"
+      Role: !GetAtt GlueJobRole.Arn
+      GlueVersion: "4.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 2
+
+  # ============================================================
+  # GlUE CRAWLER
+  # ============================================================            
+  GlueCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Name: ETL_Crawler
+      Role: !GetAtt GlueCrawlerRole.Arn
+      DatabaseName: mlops_engine_database
+      Targets:
+        S3Targets:
+          - Path: s3://attempt-bucket-mlops-engine/data/
+
+  # ============================================================
+  # ATHENA NAMED QUERY 
+  # ============================================================
+  AthenaNamedQuery:
+    Type: AWS::Athena::NamedQuery
+    Properties: 
+      Database: mlops_engine_database
+      QueryString:  
+        "WITH sector_medians AS (
+          SELECT 
+            sector,
+            cumulation,
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY net_income) AS med_net_income,
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY net_cash_flow) AS med_net_cash_flow,
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY roe) AS med_roe,
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY roa) AS med_roa,
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY ebitda) AS med_ebitda
+          FROM raw_data
+          GROUP BY sector, cumulation
+          ),
+
+          scores AS (
+            SELECT
+              d.id,
+              d.sector,
+              d.cumulation,
+                (CASE WHEN d.net_income    > s.med_net_income    THEN 1 ELSE 0 END) +
+                (CASE WHEN d.net_cash_flow > s.med_net_cash_flow THEN 1 ELSE 0 END) +
+                (CASE WHEN d.roe           > s.med_roe           THEN 1 ELSE 0 END) +
+                (CASE WHEN d.roa           > s.med_roa           THEN 1 ELSE 0 END) +
+                (CASE WHEN d.ebitda        > s.med_ebitda        THEN 1 ELSE 0 END) AS score
+              FROM raw_data d
+              JOIN sector_medians s 
+              ON d.sector = s.sector 
+              AND d.cumulation = s.cumulation
+            )
+
+          CREATE TABLE initial_labeling_data 
+          WITH (
+            format = 'PARQUET',
+            external_location = 's3://attempt-bucket-mlops-engine/ETL/initial_labeling_data/'
+          ) AS 
+          SELECT 
+            r.*,
+            CASE 
+              WHEN s.score <= 1 THEN 'low' 
+              WHEN s.score <= 3 THEN 'medium' 
+              ELSE 'high' 
+            END AS investment_rating
+          FROM raw_data r
+          LEFT JOIN scores s 
+          ON r.id = s.id; "
+
+  # ============================================================
+  # S3 (Wrangled Data Storage)
+  # ============================================================
+  WrangledDataStorage:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: WrangledDataStorage
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: GlacierRule
+            Status: Enabled
+            Transitions:
+            - StorageClass: INTELLIGENT_TIERING
+              TransitionInDays: 0
+
+  # ============================================================
+  # Sage Maker (Training Job)
+  # ============================================================
+  SageMakerTrainingJob:
+    Type: AWS::SageMaker::TrainingJob
+    Properties: 
+      TrainingJobName: ml-training-job
+      RoleArn: !GetAtt SageMakerExecutionRole.Arn
+
+      AlgorithmSpecification:
+        TrainingImage: <ECR-IMAGE-URI>
+        TrainingInputMode: File
+
+      InputDataConfig:
+        - ChannelName: training
+          DataSource:
+            S3DataSource:
+              S3DataType: S3Prefix
+              S3Uri: "s3://mlops-preprocessed-data/"
+              S3DataDistributionType: FullyReplicated
+
+      OutputDataConfig:
+        S3OutputPath: "s3://mlops-preprocessed-data/model-artifacts/"
+
+      ResourceConfig:
+        InstanceType: ml.m5.large
+        InstanceCount: 1
+        VolumeSizeInGB: 20
+
+      StoppingCondition:
+        MaxRuntimeInSeconds: 3600
+  
+  
+  # ============================================================
+  # Sage Maker (Model)
+  # ============================================================
+  SageMakerModel:
+    Type: AWS::SageMaker::Model
+    Properties:
+      ExecutionRoleArn: !GetAtt SageMakerExecutionRole.Arn
+      PrimaryContainer:
+        Image: 
+        ModelDataUrl: "s3://mlops-preprocessed-data/model-artifacts/output/model.tar.gz"
