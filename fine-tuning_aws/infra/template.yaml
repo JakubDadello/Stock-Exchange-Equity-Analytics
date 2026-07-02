@@ -132,10 +132,28 @@ Resources:
               sts:AssumeRole
       
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonS3FullAccess
-        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerRegistryReadOnly
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+
+
+      # intrinsic inline policy for SageMaker
+      Policies:
+        - PolicyName: SageMakerLimitedS3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:  
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:PutObject
+                Resource:
+                  - arn:aws:s3:::WrangledDataStorage
+                  - arn:aws:s3:::WrangledDataStorage/*
+                  - arn:aws:s3:::ModelArtifactsStorage
+                  - arn:aws:s3:::ModelArtifactsStorage/*
+
+            
               
   # ============================================================
   # ATHENA WORK GROUP 
@@ -260,19 +278,17 @@ Resources:
       RoleArn: !GetAtt SageMakerExecutionRole.Arn
 
       AlgorithmSpecification:
-        TrainingImage: <ECR-IMAGE-URI>
+        TrainingImage: MODEL_IMAGE
         TrainingInputMode: File
 
       InputDataConfig:
         - ChannelName: training
           DataSource:
             S3DataSource:
-              S3DataType: S3Prefix
-              S3Uri: "s3://mlops-preprocessed-data/"
-              S3DataDistributionType: FullyReplicated
+              S3Uri: "s3://WrangledDataStorage/train"
 
       OutputDataConfig:
-        S3OutputPath: "s3://mlops-preprocessed-data/model-artifacts/"
+        S3OutputPath: "s3://ModelArtifactsStorage/"
 
       ResourceConfig:
         InstanceType: ml.m5.large
@@ -281,15 +297,3 @@ Resources:
 
       StoppingCondition:
         MaxRuntimeInSeconds: 3600
-  
-  
-  # ============================================================
-  # Sage Maker (Model)
-  # ============================================================
-  SageMakerModel:
-    Type: AWS::SageMaker::Model
-    Properties:
-      ExecutionRoleArn: !GetAtt SageMakerExecutionRole.Arn
-      PrimaryContainer:
-        Image: 
-        ModelDataUrl: "s3://mlops-preprocessed-data/model-artifacts/output/model.tar.gz"
